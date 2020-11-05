@@ -1,0 +1,46 @@
+---
+- name: Clone the job_data repo
+  git:
+    repo: "{{ job_data_repo }}"
+    dest: "{{ clone_job_data_repo_to }}"
+    update: yes
+    clone: yes
+
+- name: Check the job_name dir exists
+  stat:
+    path: "{{ clone_job_data_repo_to }}/{{ job_data_dest }}/{{ job_name }}"
+  register: job_name_details
+
+- name: Create job_name dir if doesn't exist already
+  file:
+    path: "{{ clone_job_data_repo_to }}/{{ job_data_dest }}/{{ job_name }}"
+    state: directory
+    mode: '0755'
+  when: job_name_details.stat.exists
+
+- name: Gather job data files
+  copy:
+    src: "{{ item }}"
+    dest: "{{ clone_job_data_repo_to }}/{{ job_data_dest }}/{{ job_name }}/"
+  loop: "{{ job_data_files }}"
+
+- name: Commit job data changes
+  shell: |
+    git add .
+    git commit -m "{{ job_name }}"
+  args:
+    chdir: "{{ clone_job_data_repo_to }}/{{ job_data_dest }}/{{ job_name }}/"
+
+# we are assuming that the following is executed in a job that does changes
+# only in its directory and thus the rebase will be always successful as there
+# won't be any conflicts
+- name: Push the job data
+  shell: |
+    git pull --rebase origin master
+    git push origin master
+  args:
+    chdir: "{{ clone_job_data_repo_to }}/{{ job_data_dest }}/{{ job_name }}/"
+  register: git_push_result
+  until: git_push_result.rc == 0
+  retries: 3
+  delay: 2

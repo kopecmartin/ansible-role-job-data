@@ -1,0 +1,14 @@
+---
+- name: Clone the job_data repo
+  git:
+    repo: "{{ job_data_repo }}"
+    dest: "{{ clone_job_data_repo_to }}"
+    update: yes
+    clone: yes
+
+- name: Copy the job_data from the repo to the target
+  copy:
+    src: "{{ clone_job_data_repo_to }}/{{ job_data_dest }}/{{ job_name }}/{{ item | basename }}"
+    dest: "{{ job_data_local }}"
+  loop: "{{ job_data_files }}"
+

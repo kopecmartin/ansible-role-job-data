@@ -1,0 +1,16 @@
+---
+- hosts: localhost
+  gather_facts: no
+  vars:
+    job_data_repo: git@github.com:kopecmartin/job-data-repo.git
+    job_data_dest: jobs
+    job_name: test_job_3
+    job_data_files:
+      - /home/centos/tempest/.stestr/times.dbm.bak
+      - /home/centos/tempest/.stestr/times.dbm.dat
+      - /home/centos/tempest/.stestr/times.dbm.dir
+      - /home/centos/tempest/.stestr/format
+      - /home/centos/tempest/.stestr/next-stream
+    job_data_local: /home/centos/ansible-role-job-data/target/
+  roles:
+    - roles/restore
