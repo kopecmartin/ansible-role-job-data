@@ -1,0 +1,20 @@
+---
+# This file and plugin.spec are required by Infrared project
+
+- hosts: "{{ other.openstack_node }}"
+  gather_facts: no
+  tasks:
+    - name: Remap infrared parameters to role variables
+      set_fact:
+        "{{ item.key }}": "{{ item.value }}"
+      with_dict: "{{ other }}"
+
+    - name: Ansible role job data - backup
+      include_role:
+        name: backup
+      when: "{{ other.backup }}"
+
+    - name: Ansible role job data - restore
+      include_role:
+        name: restore
+      when: "{{ other.restore }}"
