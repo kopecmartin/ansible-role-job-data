@@ -8,7 +8,7 @@
 
 - name: Copy the job_data from the repo to the target
   copy:
-    src: "{{ clone_job_data_repo_to }}/{{ job_data_dest }}/{{ job_name }}/{{ item | basename }}"
+    src: "{{ clone_job_data_repo_to }}/{{ job_data_repo_dest }}/{{ job_name }}/{{ item }}"
     dest: "{{ job_data_local }}"
   loop: "{{ job_data_files }}"
 

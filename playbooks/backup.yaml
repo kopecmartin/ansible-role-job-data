@@ -3,7 +3,7 @@
   gather_facts: no
   vars:
     job_data_repo: git@github.com:kopecmartin/job-data-repo.git
-    job_data_dest: jobs
+    job_data_repo_dest: jobs
     job_name: test_job_3
     job_data_files:
       - /home/centos/tempest/.stestr/times.dbm.bak
