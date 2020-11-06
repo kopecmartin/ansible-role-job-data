@@ -5,11 +5,12 @@
     job_data_repo: git@github.com:kopecmartin/job-data-repo.git
     job_data_repo_dest: jobs
     job_name: test_job_3
+    job_data_local: /home/centos/tempest/.stestr
     job_data_files:
-      - /home/centos/tempest/.stestr/times.dbm.bak
-      - /home/centos/tempest/.stestr/times.dbm.dat
-      - /home/centos/tempest/.stestr/times.dbm.dir
-      - /home/centos/tempest/.stestr/format
-      - /home/centos/tempest/.stestr/next-stream
+      - times.dbm.bak
+      - times.dbm.dat
+      - times.dbm.dir
+      - format
+      - next-stream
   roles:
     - roles/backup
