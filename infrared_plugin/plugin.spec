@@ -44,3 +44,7 @@ subparsers:
             help: |
               Set to true if you want to run restore operation.
             default: false
+          clone_job_data_repo_to:
+            type: Value
+            help: |
+              A path where job_data_repo will be cloned to.
