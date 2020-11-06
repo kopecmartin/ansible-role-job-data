@@ -3,8 +3,8 @@
   git:
     repo: "{{ job_data_repo }}"
     dest: "{{ clone_job_data_repo_to }}"
-    update: yes
-    clone: yes
+    update: true
+    clone: true
 
 - name: Check the job_name dir exists
   stat:

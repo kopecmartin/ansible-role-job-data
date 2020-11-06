@@ -1,6 +1,6 @@
 ---
 - hosts: localhost
-  gather_facts: no
+  gather_facts: false
   vars:
     job_data_repo: git@github.com:kopecmartin/job-data-repo.git
     job_data_repo_dest: jobs

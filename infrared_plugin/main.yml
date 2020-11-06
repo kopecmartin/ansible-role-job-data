@@ -2,7 +2,7 @@
 # This file and plugin.spec are required by Infrared project
 
 - hosts: "{{ other.openstack_node }}"
-  gather_facts: no
+  gather_facts: false
   tasks:
     - name: Remap infrared parameters to role variables
       set_fact:
