@@ -11,6 +11,21 @@
     path: "{{ clone_job_data_repo_to }}/{{ job_data_repo_dest }}/{{ job_name }}"
   register: job_name_details
 
+- name: Check the job_data_local exists
+  stat:
+    path: "{{ job_data_local }}"
+  when: job_name_details.stat.exists
+  register: job_data_local_details
+
+- name: Create job_data_local dir if doesn't already
+  file:
+    path: "{{ job_data_local }}"
+    state: directory
+    mode: '0755'
+  when:
+    - job_name_details.stat.exists
+    - not job_data_local_details.stat.exists
+
 - name: Copy the job_data from the repo to the target
   copy:
     src: "{{ clone_job_data_repo_to }}/{{ job_data_repo_dest }}/{{ job_name }}/{{ item }}"
