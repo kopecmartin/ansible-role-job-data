@@ -1,0 +1,22 @@
+---
+- name: Commit job data changes
+  shell: |
+    git add .
+    git commit -m "{{ job_name }}"
+  args:
+    chdir: "{{ clone_job_data_repo_to }}/{{ job_data_repo_dest }}/{{ job_name }}/"
+
+# we are assuming that the following is executed in a job that does changes
+# only in its directory and thus the rebase will be always successful as there
+# won't be any conflicts
+- name: Push the job data
+  shell: |
+    git pull --rebase origin master
+    git push origin master
+  args:
+    chdir: "{{ clone_job_data_repo_to }}/{{ job_data_repo_dest }}/{{ job_name }}/"
+  register: git_push_result
+  until: git_push_result.rc == 0
+  retries: 3
+  delay: 2
+

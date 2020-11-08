@@ -5,7 +5,7 @@
     job_data_repo: git@github.com:kopecmartin/job-data-repo.git
     job_data_repo_dest: jobs
     job_name: test_job_3
-    job_data_local: /home/centos/tempest/.stestr
+    stestr_path: /home/centos/tempest/.stestr
     job_data_files:
       - times.dbm.bak
       - times.dbm.dat

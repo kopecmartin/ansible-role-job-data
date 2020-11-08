@@ -1,10 +1,11 @@
 ---
 clone_job_data_repo_to: /tmp/job-data-repo
 job_data_repo_dest: jobs
-job_data_local: /home/stack/tempest-dir/.stestr
+stestr_path: /home/stack/tempest-dir/.stestr
 job_data_files:
   - times.dbm.bak
   - times.dbm.dat
   - times.dbm.dir
   - format
   - next-stream
+clone_to_localhost: false

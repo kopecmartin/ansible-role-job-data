@@ -35,7 +35,7 @@ subparsers:
             type: Value
             help: |
               A job name.
-          job_data_local:
+          stestr_path:
             type: Value
             help: |
               A path to the .stestr dir containing the job timing data.
@@ -53,3 +53,7 @@ subparsers:
             type: Value
             help: |
               A path where job_data_repo will be cloned to.
+          clone_to_localhost:
+            type: Bool
+            help: |
+              If true, job_data_repo will be cloned to localhost.

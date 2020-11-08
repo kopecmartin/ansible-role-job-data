@@ -1,46 +1,71 @@
 ---
+- name: Clone the job_data repo to localhost
+  git:
+    repo: "{{ job_data_repo }}"
+    dest: "{{ clone_job_data_repo_to }}"
+    update: true
+    clone: true
+  delegate_to: localhost
+  when: clone_to_localhost
+
 - name: Clone the job_data repo
   git:
     repo: "{{ job_data_repo }}"
     dest: "{{ clone_job_data_repo_to }}"
     update: true
     clone: true
+  when: not clone_to_localhost
+
+- name: Check the job_name dir exists on localhost
+  stat:
+    path: "{{ clone_job_data_repo_to }}/{{ job_data_repo_dest }}/{{ job_name }}"
+  delegate_to: localhost
+  register: job_name_details
+  when: clone_to_localhost
 
 - name: Check the job_name dir exists
   stat:
     path: "{{ clone_job_data_repo_to }}/{{ job_data_repo_dest }}/{{ job_name }}"
   register: job_name_details
+  when: not clone_to_localhost
 
-- name: Create job_name dir if doesn't exist already
+- name: Create job_name dir if it doesn't exist already on localhost
   file:
     path: "{{ clone_job_data_repo_to }}/{{ job_data_repo_dest }}/{{ job_name }}"
     state: directory
     mode: '0755'
-  when: not job_name_details.stat.exists
+  delegate_to: localhost
+  when:
+    - not job_name_details.stat.exists
+    - clone_to_localhost
+
+- name: Create job_name dir if it doesn't exist already
+  file:
+    path: "{{ clone_job_data_repo_to }}/{{ job_data_repo_dest }}/{{ job_name }}"
+    state: directory
+    mode: '0755'
+  when:
+    - not job_name_details.stat.exists
+    - not clone_to_localhost
+
+- name: Gather job data files to localhost
+  fetch:
+    src: "{{ stestr_path }}/{{ item }}"
+    dest: "{{ clone_job_data_repo_to }}/{{ job_data_repo_dest }}/{{ job_name }}/"
+  loop: "{{ job_data_files }}"
+  when: clone_to_localhost
 
 - name: Gather job data files
   copy:
-    src: "{{ job_data_local }}/{{ item }}"
+    src: "{{ stestr_path }}/{{ item }}"
     dest: "{{ clone_job_data_repo_to }}/{{ job_data_repo_dest }}/{{ job_name }}/"
+    remote_src: true
   loop: "{{ job_data_files }}"
+  when: no clone_to_localhost
 
-- name: Commit job data changes
-  shell: |
-    git add .
-    git commit -m "{{ job_name }}"
-  args:
-    chdir: "{{ clone_job_data_repo_to }}/{{ job_data_repo_dest }}/{{ job_name }}/"
+- import_tasks: ../../../tasks/commit_push.yaml
+  delegate_to: localhost
+  when: clone_to_localhost
 
-# we are assuming that the following is executed in a job that does changes
-# only in its directory and thus the rebase will be always successful as there
-# won't be any conflicts
-- name: Push the job data
-  shell: |
-    git pull --rebase origin master
-    git push origin master
-  args:
-    chdir: "{{ clone_job_data_repo_to }}/{{ job_data_repo_dest }}/{{ job_name }}/"
-  register: git_push_result
-  until: git_push_result.rc == 0
-  retries: 3
-  delay: 2
+- import_tasks: ../../../tasks/commit_push.yaml
+  when: not clone_to_localhost
