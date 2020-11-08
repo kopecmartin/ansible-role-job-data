@@ -19,4 +19,3 @@
   until: git_push_result.rc == 0
   retries: 3
   delay: 2
-

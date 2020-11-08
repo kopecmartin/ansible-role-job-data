@@ -13,9 +13,9 @@
     - name: Ansible role job data - backup
       include_role:
         name: backup
-      when: "{{ other.backup }}"
+      when: other.backup | bool
 
     - name: Ansible role job data - restore
       include_role:
         name: restore
-      when: "{{ other.restore }}"
+      when: other.restore | bool
