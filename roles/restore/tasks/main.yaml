@@ -26,28 +26,28 @@
 - name: Check the job_name dir exists
   stat:
     path: "{{ clone_job_data_repo_to }}/{{ job_data_repo_dest }}/{{ job_name }}"
-  register: job_name_details
+  register: job_name_details_2
   when: not clone_to_localhost | bool
 
-- name: Check the stestr_path exists
-  stat:
-    path: "{{ stestr_path }}"
-  when: job_name_details.stat.exists | bool
-  register: stestr_path_details
+- when: >
+    (job_name_details.stat is defined and job_name_details.stat.exists | bool) or
+    (job_name_details_2.stat is defined and job_name_details_2.stat.exists | bool)
+  block:
+    - name: Check the stestr_path exists
+      stat:
+        path: "{{ stestr_path }}"
+      register: stestr_path_details
 
-- name: Create stestr_path dir if it doesn't exist already
-  file:
-    path: "{{ stestr_path }}"
-    state: directory
-    mode: '0755'
-  when:
-    - job_name_details.stat.exists | bool
-    - not stestr_path_details.stat.exists | bool
+    - name: Create stestr_path dir if it doesn't exist already
+      file:
+        path: "{{ stestr_path }}"
+        state: directory
+        mode: '0755'
+      when: not stestr_path_details.stat.exists | bool
 
-- name: Copy the job_data from the repo to the target
-  copy:
-    src: "{{ clone_job_data_repo_to }}/{{ job_data_repo_dest }}/{{ job_name }}/{{ item }}"
-    dest: "{{ stestr_path }}"
-    remote_src: not clone_to_localhost
-  loop: "{{ job_data_files }}"
-  when: job_name_details.stat.exists | bool
+    - name: Copy the job_data from the repo to the target
+      copy:
+        src: "{{ clone_job_data_repo_to }}/{{ job_data_repo_dest }}/{{ job_name }}/{{ item }}"
+        dest: "{{ stestr_path }}"
+        remote_src: not clone_to_localhost
+      loop: "{{ job_data_files }}"
