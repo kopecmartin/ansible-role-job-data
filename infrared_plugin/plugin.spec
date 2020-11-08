@@ -16,6 +16,11 @@ subparsers:
             help: |
               OpenStack node ansible-role-job-data will be executed on.
             default: undercloud
+          remote_user:
+            type: Value
+            help: |
+              Name of a remote user which the tasks will be executed under.
+            default: stack
           job_data_repo:
             type: Value
             help: |
