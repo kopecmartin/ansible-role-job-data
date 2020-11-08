@@ -6,7 +6,7 @@
     update: true
     clone: true
   delegate_to: localhost
-  when: clone_to_localhost
+  when: clone_to_localhost | bool
 
 - name: Clone the job_data repo
   git:
@@ -14,20 +14,20 @@
     dest: "{{ clone_job_data_repo_to }}"
     update: true
     clone: true
-  when: not clone_to_localhost
+  when: not clone_to_localhost | bool
 
 - name: Check the job_name dir exists on localhost
   stat:
     path: "{{ clone_job_data_repo_to }}/{{ job_data_repo_dest }}/{{ job_name }}"
   delegate_to: localhost
   register: job_name_details
-  when: clone_to_localhost
+  when: clone_to_localhost | bool
 
 - name: Check the job_name dir exists
   stat:
     path: "{{ clone_job_data_repo_to }}/{{ job_data_repo_dest }}/{{ job_name }}"
   register: job_name_details
-  when: not clone_to_localhost
+  when: not clone_to_localhost | bool
 
 - name: Create job_name dir if it doesn't exist already on localhost
   file:
@@ -36,8 +36,8 @@
     mode: '0755'
   delegate_to: localhost
   when:
-    - not job_name_details.stat.exists
-    - clone_to_localhost
+    - not job_name_details.stat.exists | bool
+    - clone_to_localhost | bool
 
 - name: Create job_name dir if it doesn't exist already
   file:
@@ -45,15 +45,15 @@
     state: directory
     mode: '0755'
   when:
-    - not job_name_details.stat.exists
-    - not clone_to_localhost
+    - not job_name_details.stat.exists | bool
+    - not clone_to_localhost | bool
 
 - name: Gather job data files to localhost
   fetch:
     src: "{{ stestr_path }}/{{ item }}"
     dest: "{{ clone_job_data_repo_to }}/{{ job_data_repo_dest }}/{{ job_name }}/"
   loop: "{{ job_data_files }}"
-  when: clone_to_localhost
+  when: clone_to_localhost | bool
 
 - name: Gather job data files
   copy:
@@ -61,11 +61,11 @@
     dest: "{{ clone_job_data_repo_to }}/{{ job_data_repo_dest }}/{{ job_name }}/"
     remote_src: true
   loop: "{{ job_data_files }}"
-  when: no clone_to_localhost
+  when: not clone_to_localhost | bool
 
 - import_tasks: ../../../tasks/commit_push.yaml
   delegate_to: localhost
   when: clone_to_localhost
 
 - import_tasks: ../../../tasks/commit_push.yaml
-  when: not clone_to_localhost
+  when: not clone_to_localhost | bool

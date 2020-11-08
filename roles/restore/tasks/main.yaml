@@ -6,7 +6,7 @@
     update: true
     clone: true
   delegate_to: localhost
-  when: clone_to_localhost
+  when: clone_to_localhost | bool
 
 - name: Clone the job_data repo
   git:
@@ -14,25 +14,25 @@
     dest: "{{ clone_job_data_repo_to }}"
     update: true
     clone: true
-  when: not clone_to_localhost
+  when: not clone_to_localhost | bool
 
 - name: Check the job_name dir exists on localhost
   stat:
     path: "{{ clone_job_data_repo_to }}/{{ job_data_repo_dest }}/{{ job_name }}"
   delegate_to: localhost
   register: job_name_details
-  when: clone_to_localhost
+  when: clone_to_localhost | bool
 
 - name: Check the job_name dir exists
   stat:
     path: "{{ clone_job_data_repo_to }}/{{ job_data_repo_dest }}/{{ job_name }}"
   register: job_name_details
-  when: not clone_to_localhost
+  when: not clone_to_localhost | bool
 
 - name: Check the stestr_path exists
   stat:
     path: "{{ stestr_path }}"
-  when: job_name_details.stat.exists
+  when: job_name_details.stat.exists | bool
   register: stestr_path_details
 
 - name: Create stestr_path dir if it doesn't exist already
@@ -41,8 +41,8 @@
     state: directory
     mode: '0755'
   when:
-    - job_name_details.stat.exists
-    - not stestr_path_details.stat.exists
+    - job_name_details.stat.exists | bool
+    - not stestr_path_details.stat.exists | bool
 
 - name: Copy the job_data from the repo to the target
   copy:
@@ -50,4 +50,4 @@
     dest: "{{ stestr_path }}"
     remote_src: not clone_to_localhost
   loop: "{{ job_data_files }}"
-  when: job_name_details.stat.exists
+  when: job_name_details.stat.exists | bool
