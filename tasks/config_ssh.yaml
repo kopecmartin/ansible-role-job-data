@@ -1,0 +1,20 @@
+---
+- name: Copy the ssh_key to the target's ~/.ssh dir
+  copy:
+    src: "{{ ssh_key }}"
+    dest: ~/.ssh/
+    remote_src: "{{ remote_src | default(false) }}"
+
+- name: Generate ssh config entry to a temp file
+  template:
+    src: ../templates/ssh_config.j2
+    dest: /tmp/ssh_config_entry
+
+- name: Append ssh config entry to the ~/.ssh/config
+  shell: >
+    cat /tmp/ssh_config_entry >> ~/.ssh/config
+
+- name: Delete the temp file
+  file:
+    path: /tmp/ssh_config_entry
+    state: absent

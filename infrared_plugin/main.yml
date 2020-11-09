@@ -10,6 +10,10 @@
         "{{ item.key }}": "{{ item.value }}"
       with_dict: "{{ other }}"
 
+    - name: Add an ssh config entry
+      import_tasks: ../tasks/config_ssh.yaml
+      when: other.configure_ssh | bool
+
     - name: Ansible role job data - backup
       include_role:
         name: backup

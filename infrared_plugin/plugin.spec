@@ -57,3 +57,24 @@ subparsers:
             type: Bool
             help: |
               If true, job_data_repo will be cloned to localhost.
+          configure_ssh:
+            type: Bool
+            help: |
+              If true, a new ssh entry will be added on the target machine.
+            default: false
+          ssh_host:
+            type: Value
+            help: |
+              An ssh host to be added to the ssh config file.
+          ssh_user:
+            type: Value
+            help: |
+              A username to be used to ssh to the ssh_host.
+          ssh_key:
+            type: Value
+            help: |
+              A path to an ssh key to be used to connect to ssh_host.
+          remote_src:
+            type: Bool
+            help: |
+              Whether ssh_key is a remote (true) or local (false) destination.
