@@ -1,0 +1,7 @@
+---
+- name: Clone the job_data repo
+  git:
+    repo: "{{ job_data_repo }}"
+    dest: "{{ clone_job_data_repo_to }}"
+    update: true
+    clone: true

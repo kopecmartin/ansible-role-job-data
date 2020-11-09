@@ -1,19 +1,9 @@
 ---
-- name: Clone the job_data repo to localhost
-  git:
-    repo: "{{ job_data_repo }}"
-    dest: "{{ clone_job_data_repo_to }}"
-    update: true
-    clone: true
+- import_tasks: ../../../tasks/clone.yaml
   delegate_to: localhost
   when: clone_to_localhost | bool
 
-- name: Clone the job_data repo
-  git:
-    repo: "{{ job_data_repo }}"
-    dest: "{{ clone_job_data_repo_to }}"
-    update: true
-    clone: true
+- import_tasks: ../../../tasks/clone.yaml
   when: not clone_to_localhost | bool
 
 - when: clone_to_localhost | bool
@@ -62,7 +52,7 @@
 
 - import_tasks: ../../../tasks/commit_push.yaml
   delegate_to: localhost
-  when: clone_to_localhost
+  when: clone_to_localhost | bool
 
 - import_tasks: ../../../tasks/commit_push.yaml
   when: not clone_to_localhost | bool
