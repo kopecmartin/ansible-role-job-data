@@ -74,6 +74,10 @@ subparsers:
             type: Value
             help: |
               A path to an ssh key to be used to connect to ssh_host.
+          ssh_key_url:
+            type: Value
+            help: |
+              An URL to an ssh key to be used to connect to ssh_host.
           remote_src:
             type: Bool
             help: |

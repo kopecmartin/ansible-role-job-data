@@ -1,9 +1,25 @@
 ---
-- name: Copy the ssh_key to the target's ~/.ssh dir
-  copy:
-    src: "{{ ssh_key }}"
-    dest: ~/.ssh/
-    remote_src: "{{ remote_src | default(false) }}"
+- when: ssh_key_url is defined
+  block:
+    - name: Download an identity key to the target's ~/.ssh dir
+      get_url:
+        url: "{{ ssh_key_url }}"
+        dest: ~/.ssh/
+        mode: '0600'
+
+    - set_fact:
+        ssh_key_name: "{{ ssh_key_url | basename }}"
+
+- when: ssh_key is defined
+  block:
+    - name: Copy the ssh_key to the target's ~/.ssh dir
+      copy:
+        src: "{{ ssh_key }}"
+        dest: ~/.ssh/
+        remote_src: "{{ remote_src | default(false) }}"
+
+    - set_fact:
+        ssh_key_name: "{{ ssh_key | basename }}"
 
 - name: Generate ssh config entry to a temp file
   template:
