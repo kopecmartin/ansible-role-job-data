@@ -39,5 +39,5 @@
       copy:
         src: "{{ clone_job_data_repo_to }}/{{ job_data_repo_dest }}/{{ job_name }}/{{ item }}"
         dest: "{{ stestr_path }}"
-        remote_src: not clone_to_localhost
+        remote_src: "{{ not clone_to_localhost }}"
       loop: "{{ job_data_files }}"
