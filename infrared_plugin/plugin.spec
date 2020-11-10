@@ -82,3 +82,8 @@ subparsers:
             type: Bool
             help: |
               Whether ssh_key is a remote (true) or local (false) destination.
+          just_clone_when_restore:
+            type: Bool
+            help: |
+              If true, on restore operation the job_data_repo will be only
+              cloned, no copy to the stestr_path will be executed.
