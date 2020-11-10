@@ -28,7 +28,8 @@
 
 - name: Append ssh config entry to the ~/.ssh/config
   shell: >
-    cat /tmp/ssh_config_entry >> ~/.ssh/config
+    cat /tmp/ssh_config_entry >> ~/.ssh/config;
+    chmod 600 ~/.ssh/config
 
 - name: Delete the temp file
   file:
