@@ -12,14 +12,14 @@
 
     - name: Add an ssh config entry
       import_tasks: ../tasks/config_ssh.yaml
-      when: other.configure_ssh | bool
+      when: configure_ssh | bool
 
     - name: Ansible role job data - backup
       include_role:
         name: backup
-      when: other.backup | bool
+      when: backup | bool
 
     - name: Ansible role job data - restore
       include_role:
         name: restore
-      when: other.restore | bool
+      when: restore | bool

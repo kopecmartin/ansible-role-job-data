@@ -1,4 +1,11 @@
 ---
+- name: Configure git for a push
+  shell: |
+    git config user.email {{ git_email | default('stack@undercloud.com') }}
+    git config user.name {{ git_name | default('stack') }}
+  args:
+    chdir: "{{ clone_job_data_repo_to }}/"
+
 - name: Commit job data changes
   shell: |
     git add .
